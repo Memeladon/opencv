@@ -34,7 +34,6 @@ def double_threshold_filtering(img, low_pr, high_pr):
     # Преобразование пороговых значений в диапазон [0, 255]
     down = low_pr * 255
     up = high_pr * 255
-
     n, m = img.shape
     clone_of_img = np.copy(img)  # Создаем копию исходного изображения
 
@@ -55,31 +54,31 @@ def double_threshold_filtering(img, low_pr, high_pr):
 
 def sobel_filter(img, kernel):
     try:
-        img_height, img_width, img_canals = img.shape
+        img_h, img_w, img_canals = img.shape
     except:
-        img_height, img_width = img.shape
+        img_h, img_w = img.shape
         img_canals = 1
 
-    kernel_height, kernel_width = kernel.shape
+    kernel_h, kernel_w = kernel.shape
 
     # Вычисляем размеры результирующего изображения
-    result_height = img_height - kernel_height + 1
-    result_width = img_width - kernel_width + 1
+    result_h = img_h - kernel_h + 1
+    result_w = img_w - kernel_w + 1
 
     # Создаем пустой массив для результата с теми же размерами
-    result = np.zeros((result_height, result_width), dtype=np.float32)
+    result = np.zeros((result_h, result_w), dtype=np.float32)
 
     if img_canals != 1:
         # Если изображение имеет несколько каналов (цветное изображение)
-        for i in range(result_height):
-            for j in range(result_width):
+        for i in range(result_h):
+            for j in range(result_w):
                 for canal in range(img_canals):
                     # Применяем фильтр к каждому каналу
-                    result[i, j, canal] = np.sum(img[i:i + kernel_height, j:j + kernel_width, canal] * kernel)
+                    result[i, j, canal] = np.sum(img[i:i + kernel_h, j:j + kernel_w, canal] * kernel)
     else:
         # Если изображение одноканальное (оттенки серого)
-        for i in range(result_height):
-            for j in range(result_width):
+        for i in range(result_h):
+            for j in range(result_w):
                 # Применяем фильтр к отдельному каналу
-                result[i, j] = np.sum(img[i:i + kernel_height, j:j + kernel_width] * kernel)
+                result[i, j] = np.sum(img[i:i + kernel_h, j:j + kernel_w] * kernel)
     return result  # Возвращаем результат применения фильтра
