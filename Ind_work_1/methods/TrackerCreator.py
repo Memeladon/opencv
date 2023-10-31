@@ -17,10 +17,10 @@ class TrackerCreator:
                           'CSRT': cv2.TrackerCSRT_create()}
         # Словарь доступных видео
         self.video_map = {'cars.mp4': '../videos/source/cars.mp4',
-                          'classic-red-sports-car.mp4': '../videos/source/classic-red-spots-car.mp4',
+                          'classic-red-sports-car.mp4': '../videos/source/classic-red-sports-car.mp4',
                           'front-of-cars-in-forest.mp4': '../videos/source/front-of-cars-in-forest.mp4',
-                          'long-road-in-an-air': '../videos/source/long-road-in-an-air',
-                          'two-cars-speeding': '../videos/source/two-cars-speeding', }
+                          'long-road-in-an-air.mp4': '../videos/source/long-road-in-an-air.mp4',
+                          'two-cars-speeding.mp4': '../videos/source/two-cars-speeding.mp4', }
 
         # Создание трекера на основе выбранного типа
         if self.types_map[tracker_type]:
@@ -91,4 +91,4 @@ class TrackerCreator:
         cv2.destroyAllWindows()
 
 
-TrackerCreator('MEDIANFLOW', 'long-road-in-an-air').render()
+TrackerCreator('MEDIANFLOW', 'two-cars-speeding.mp4').render()
