@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 
+
 class KCFTracker:
     def __init__(self, image, bbox):
         self.x, self.y, self.width, self.height = bbox
@@ -74,7 +75,6 @@ class KCFTracker:
         # Обновите текущее положение объекта
         self.x = x1 + (x2 - x1) / 2
         self.y = y1 + (y2 - y1) / 2
-
 
 
 video = cv2.VideoCapture('data_files/horse_lunch.webm')
