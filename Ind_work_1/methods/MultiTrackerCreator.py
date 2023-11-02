@@ -8,6 +8,7 @@ class TrackerCreator:
 
         self.tracker_type = tracker_type
         # Словарь доступных типов трекеров в OpenCV
+        #  MIL, KCF и алгоритм TLD представляют собой предварительно обученные модели
         self.types_map = {'BOOSTING': cv2.legacy.TrackerBoosting_create(),
                           'MIL': cv2.TrackerMIL_create(),
                           'KCF': cv2.TrackerKCF_create(),
@@ -94,7 +95,7 @@ class TrackerCreator:
 
 
 if __name__ == '__main__':
-    # Этот код будет выполнен только при вызове файла TrackerCreator.py как скрипта
+    # Этот код будет выполнен только при вызове файла MultiTrackerCreator.py как скрипта
     key = 2
     if key == 0:
         # TrackerCreator('MEDIANFLOW', 'cars.mp4').render()
