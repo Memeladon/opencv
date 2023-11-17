@@ -48,7 +48,6 @@ class CamShiftHandMade:
 
         while True:
             roi_prob_distr = self.get_area_from_roi(prob_distr, roi)
-
             m00 = self.compute_moments(roi_prob_distr, 0, 0)
             m10 = self.compute_moments(roi_prob_distr, 1, 0)
             m01 = self.compute_moments(roi_prob_distr, 0, 1)
@@ -59,9 +58,7 @@ class CamShiftHandMade:
             xc = m10 / m00
             yc = m01 / m00
             new_roi = self.compute_new_roi(roi, (yc, xc))
-
             centroids_history.append((yc + roi[0], xc + roi[1]))
-
             if ((abs(new_roi[0] - roi[0]) < 2 and
                  abs(new_roi[1] - roi[1]) < 2) or iter_count > 20):
                 s = 2 * math.sqrt(m00)
@@ -70,7 +67,5 @@ class CamShiftHandMade:
 
             roi = new_roi
             iter_count += 1
-        return roi, centroids_history
-
-
+        return roi, roi
 

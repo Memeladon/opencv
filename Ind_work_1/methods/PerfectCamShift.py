@@ -25,6 +25,7 @@ class HandMadeCamShift(object):
         self.show_backproj = False
         self.track_window = None
         self.shift = CamShiftHandMade()
+        # self.shift = OurMeanShift()
 
     def onmouse(self, event, x, y, flags, param):
         if event == cv.EVENT_LBUTTONDOWN:
@@ -76,8 +77,10 @@ class HandMadeCamShift(object):
                 prob = cv.calcBackProject([hsv], [0], self.hist, [0, 180], 1)
                 prob &= mask
                 term_crit = (cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_COUNT, 10, 1)
+
                 track_box, self.track_window = cv.CamShift(prob, self.track_window, term_crit)
-                # self.track_window, track_box, = self.shift.camshift(prob, self.track_window)
+                # self.track_window, track_box = self.shift.camshift(prob, self.track_window)
+
                 x, y, w, h = self.track_window
 
                 if self.show_backproj:
