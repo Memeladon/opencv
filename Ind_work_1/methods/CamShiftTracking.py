@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
-
+import os
+import time
 
 class CamShiftHandMade:
     def __init__(self):
@@ -18,6 +19,12 @@ class CamShiftHandMade:
             print(self.frame_width, self.frame_height)
         else:
             print("The video was not read successfully")
+
+        output_folder = f'../videos/CamShift_data(built-in)'
+        os.makedirs(output_folder, exist_ok=True)
+        output_file = os.path.join(output_folder, f'CamShift_1.avi')
+        self.output = cv2.VideoWriter(output_file, cv2.VideoWriter_fourcc(*'XVID'), 60.0,
+                                      (self.frame_width // 2, self.frame_height // 2), True)
 
         # Изменение размера видео для более удобного просмотра
         self.frame = cv2.resize(self.frame, (self.frame_width // 2, self.frame_height // 2))
@@ -51,11 +58,15 @@ class CamShiftHandMade:
         # Инициализируем критерий завершения для метода CamShift.
         term_crit = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 1)
 
+        prev_frame_time = 0
+
         while True:
             ret, frame = self.cap.read()
             if not ret:
                 print("Error reading video file.")
                 break
+
+            frame = cv2.resize(frame, (self.frame_width // 2, self.frame_height // 2))
 
             hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
@@ -71,8 +82,18 @@ class CamShiftHandMade:
             # img = cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 5)
             img = cv2.ellipse(frame, ret, (0, 0, 255), 2)
 
+            # Для примера, вывод FPS на изображение
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            new_frame_time = time.time()
+            fps = 1 / (new_frame_time - prev_frame_time)
+            prev_frame_time = new_frame_time
+            fps = str(int(fps))
+
+            cv2.putText(frame, fps, (3, 30), font, 1, (100, 255, 0), 3, cv2.LINE_AA)
+
             # Отображаем текущий кадр с обнаруженным лицом.
             cv2.imshow('img', img)
+            self.output.write(frame)
 
             k = cv2.waitKey(30) & 0xff
             if k == 27:
