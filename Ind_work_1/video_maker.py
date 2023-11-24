@@ -1,7 +1,5 @@
 import cv2
 
-VIDEO_NAME = '"../videos/source/output_video.mp4"'
-
 
 def record_video():
     # Инициализация видеозахвата для первой доступной камеры
@@ -17,10 +15,9 @@ def record_video():
     frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
     # Создание объекта VideoWriter для записи видео в формате MP4
-    # Формат видео кодека можно выбрать по желанию, но в данном случае используется XVID
-    output_filename = VIDEO_NAME
+    output_filename = "videos/source/1.mp4"
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    out = cv2.VideoWriter(output_filename, fourcc, 20.0, (frame_width, frame_height))
+    out = cv2.VideoWriter(output_filename, fourcc, 60.0, (frame_width, frame_height))
 
     while cap.isOpened():
         ret, frame = cap.read()

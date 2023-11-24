@@ -17,7 +17,7 @@ class TrackerCreator:
                           'MOSSE': cv2.legacy.TrackerMOSSE_create(),
                           'CSRT': cv2.TrackerCSRT_create()}
         # Словарь доступных видео
-        self.video_map = {'cars.mp4': '../videos/source/cars.mp4',
+        self.video_map = {'1': '../videos/source/1.mp4',
                           'classic-red-sports-car.mp4': '../videos/source/classic-red-sports-car.mp4',
                           'front-of-cars-in-forest.mp4': '../videos/source/front-of-cars-in-forest.mp4',
                           'long-road-in-an-air.mp4': '../videos/source/long-road-in-an-air.mp4',
@@ -96,23 +96,18 @@ class TrackerCreator:
 
 if __name__ == '__main__':
     # Этот код будет выполнен только при вызове файла MultiTrackerCreator.py как скрипта
-    key = 2
+    key = 1
     if key == 0:
-        # TrackerCreator('MEDIANFLOW', 'cars.mp4').render()
-        TrackerCreator('MEDIANFLOW', 'classic-red-sports-car.mp4').render()
-        TrackerCreator('MEDIANFLOW', 'front-of-cars-in-forest.mp4').render()
-        TrackerCreator('MEDIANFLOW', 'long-road-in-an-air.mp4').render()
-        TrackerCreator('MEDIANFLOW', 'two-cars-speeding.mp4').render()
+        # TrackerCreator('KCF', 'cars.mp4').render()
+        TrackerCreator('KCF', '1').render()
+        # TrackerCreator('KCF', 'front-of-cars-in-forest.mp4').render()
+        # TrackerCreator('KCF', 'long-road-in-an-air.mp4').render()
+        # TrackerCreator('KCF', 'two-cars-speeding.mp4').render()
     elif key == 1:
-        # TrackerCreator('MOSSE', 'cars.mp4').render()
-        TrackerCreator('MOSSE', 'classic-red-sports-car.mp4').render()
-        TrackerCreator('MOSSE', 'front-of-cars-in-forest.mp4').render()
-        TrackerCreator('MOSSE', 'long-road-in-an-air.mp4').render()
-        TrackerCreator('MOSSE', 'two-cars-speeding.mp4').render()
-    elif key == 2:
         # TrackerCreator('CSRT', 'cars.mp4').render()
-        TrackerCreator('CSRT', 'classic-red-sports-car.mp4').render()
+        TrackerCreator('CSRT', '1').render()
         TrackerCreator('CSRT', 'front-of-cars-in-forest.mp4').render()
         TrackerCreator('CSRT', 'long-road-in-an-air.mp4').render()
         TrackerCreator('CSRT', 'two-cars-speeding.mp4').render()
+
 
