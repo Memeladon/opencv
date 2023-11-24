@@ -1,4 +1,5 @@
 import math
+import time
 
 import numpy as np
 import cv2
@@ -24,7 +25,9 @@ class CamShiftHandMade:
         cv2.normalize(roi_hist, roi_hist, 0, 255, cv2.NORM_MINMAX)
         roi_track_window = self.bbox_to_roi(track_window)
 
-        while 1:
+        prev_frame_time = 0
+
+        while True:
             ret, frame = cap.read()
             if ret:
                 hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -33,9 +36,18 @@ class CamShiftHandMade:
                 track_window = self.mean_shift(dst, roi_track_window)
 
                 x, y, w, h = track_window
-
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 255), 4)
-                cv2.imshow("Meanshift Track", frame)
+
+                # Для примера, вывод FPS на изображение
+                font = cv2.FONT_HERSHEY_SIMPLEX
+                new_frame_time = time.time()
+                fps = 1 / (new_frame_time - prev_frame_time)
+                prev_frame_time = new_frame_time
+                fps = str(int(fps))
+
+                cv2.putText(frame, fps, (3, 30), font, 1, (100, 255, 0), 3, cv2.LINE_AA)
+
+                cv2.imshow("Camshift Track", frame)
 
                 if cv2.waitKey(1) & 0xFF == 27:
                     break
@@ -128,5 +140,5 @@ class CamShiftHandMade:
         return roi
 
 
-# camShift = CamShiftHandMade()
-# camShift.start()
+camShift = CamShiftHandMade()
+camShift.start()

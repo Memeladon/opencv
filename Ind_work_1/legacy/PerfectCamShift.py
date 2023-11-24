@@ -81,7 +81,7 @@ class PerfectCamShift(object):
                 term_crit = (cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_COUNT, 10, 1)
 
                 # track_box, self.track_window = cv.CamShift(dst, self.track_window, term_crit)
-                self.track_window, track_box = self.shift.mean_shift(dst, self.track_window)
+                self.track_window = self.shift.mean_shift(dst, self.track_window)
 
                 x, y, w, h = self.track_window
 
