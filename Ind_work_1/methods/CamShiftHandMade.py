@@ -33,10 +33,11 @@ class CamShiftHandMade:
                 hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
                 dst = cv2.calcBackProject([hsv], [0], roi_hist, [0, 180], 1)
 
-                track_window = self.mean_shift(dst, roi_track_window)
+                track_window, center, axes, angle = self.mean_shift(dst, roi_track_window)
 
-                x, y, w, h = track_window
-                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 255), 4)
+                # x, y, w, h = track_window
+                # cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 255), 4)
+                cv2.ellipse(frame, center, axes, angle, 0, 360, (0, 0, 255), 2)
 
                 # Для примера, вывод FPS на изображение
                 font = cv2.FONT_HERSHEY_SIMPLEX
@@ -115,6 +116,10 @@ class CamShiftHandMade:
         iter_count = 0
         centroids_history = list()
 
+    def mean_shift(self, frame, roi):
+        iter_count = 0
+        centroids_history = list()
+
         while True:
             area = self.get_area_from_roi(frame, roi)
 
@@ -137,7 +142,13 @@ class CamShiftHandMade:
 
             roi = new_roi
             iter_count += 1
-        return roi
+
+        # Вычисление параметров эллипса: центр, оси, угол наклона
+        center = (roi[0] + roi[2] // 2, roi[1] + roi[3] // 2)
+        axes = (roi[2] // 2, roi[3] // 2)
+        angle = 0  # Угол наклона, т.к. камера смотрит прямо, угол = 0
+
+        return roi, center, axes, angle
 
 
 camShift = CamShiftHandMade()

@@ -68,7 +68,8 @@ class CamShiftHandMade:
             x, y, w, h = track_window
 
             # Рисуем прямоугольник, охватывающий область отслеживания, на кадре.
-            img = cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 5)
+            # img = cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 5)
+            img = cv2.ellipse(frame, ret, (0, 0, 255), 2)
 
             # Отображаем текущий кадр с обнаруженным лицом.
             cv2.imshow('img', img)
