@@ -6,8 +6,8 @@ import cv2
 
 
 class CamShiftHandMade:
-    def start(self):
-        cap = cv2.VideoCapture(0)
+    def start(self, video_path):
+        cap = cv2.VideoCapture(video_path)
         ret, frame = cap.read()
 
         bbox = cv2.selectROI(frame)
@@ -151,5 +151,6 @@ class CamShiftHandMade:
         return roi, center, axes, angle
 
 
+video_path = '../videos/source/1.mp4'
 camShift = CamShiftHandMade()
-camShift.start()
+camShift.start(video_path)
