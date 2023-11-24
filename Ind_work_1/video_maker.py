@@ -2,6 +2,7 @@ import cv2
 
 VIDEO_NAME = '"../videos/source/output_video.mp4"'
 
+
 def record_video():
     # Инициализация видеозахвата для первой доступной камеры
     cap = cv2.VideoCapture(0)

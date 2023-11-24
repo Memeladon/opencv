@@ -1,4 +1,4 @@
-from Ind_work_1.methods.PerfectCamShift import HandMadeCamShift
+from Ind_work_1.legacy.PerfectCamShift import PerfectCamShift
 
 # Запуск самодельного CamShift
 print(__doc__)
@@ -8,5 +8,5 @@ try:
     video_src = sys.argv[1]
 except:
     video_src = 0
-HandMadeCamShift(video_src).run()
+PerfectCamShift(video_src).run()
 

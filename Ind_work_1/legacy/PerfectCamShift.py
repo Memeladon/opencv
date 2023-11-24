@@ -1,7 +1,7 @@
 from __future__ import print_function
 import sys
 
-from Ind_work_1.methods.CamShiftHandMade import CamShiftHandMade
+from Ind_work_1.legacy.CamShiftHandMade_Legacy import CamShiftHandMade
 
 PY3 = sys.version_info[0] == 3
 
@@ -12,7 +12,7 @@ if PY3:
     import cv2 as cv
 
 
-class HandMadeCamShift(object):
+class PerfectCamShift(object):
     def __init__(self, video_src):
         self.cam = cv.VideoCapture(0)
 
@@ -25,7 +25,6 @@ class HandMadeCamShift(object):
         self.show_backproj = False
         self.track_window = None
         self.shift = CamShiftHandMade()
-        # self.shift = OurMeanShift()
 
     def onmouse(self, event, x, y, flags, param):
         if event == cv.EVENT_LBUTTONDOWN:
@@ -56,6 +55,7 @@ class HandMadeCamShift(object):
         while True:
             _ret, self.frame = self.cam.read()
             vis = self.frame.copy()
+
             hsv = cv.cvtColor(self.frame, cv.COLOR_BGR2HSV)
             mask = cv.inRange(hsv, np.array((0., 60., 32.)), np.array((180., 255., 255.)))
 
@@ -63,6 +63,7 @@ class HandMadeCamShift(object):
                 x0, y0, x1, y1 = self.selection
                 hsv_roi = hsv[y0:y1, x0:x1]
                 mask_roi = mask[y0:y1, x0:x1]
+
                 hist = cv.calcHist([hsv_roi], [0], mask_roi, [16], [0, 180])
                 cv.normalize(hist, hist, 0, 255, cv.NORM_MINMAX)
                 self.hist = hist.reshape(-1)
@@ -73,23 +74,24 @@ class HandMadeCamShift(object):
                 vis[mask == 0] = 0
 
             if self.track_window and self.track_window[2] > 0 and self.track_window[3] > 0:
+            # if _ret:
                 self.selection = None
-                prob = cv.calcBackProject([hsv], [0], self.hist, [0, 180], 1)
-                prob &= mask
+                dst = cv.calcBackProject([hsv], [0], self.hist, [0, 180], 1)
+                dst &= mask
                 term_crit = (cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_COUNT, 10, 1)
 
-                track_box, self.track_window = cv.CamShift(prob, self.track_window, term_crit)
-                # self.track_window, track_box = self.shift.camshift(prob, self.track_window)
+                track_box, self.track_window = cv.CamShift(dst, self.track_window, term_crit)
+                # self.track_window, track_box = self.shift.mean_shift(dst, self.track_window)
 
                 x, y, w, h = self.track_window
 
                 if self.show_backproj:
-                    vis[:] = prob[..., np.newaxis]
+                    vis[:] = dst[..., np.newaxis]
                 try:
                     # cv.ellipse(vis, track_box, (0, 0, 255), 2)
                     cv.rectangle(vis, (x, y), (x + w, y + h), (0, 255, 0), 5)
                 except:
-                    print(track_box)
+                    print(f'track_box: {track_box}')
 
             cv.imshow('camshift', vis)
 

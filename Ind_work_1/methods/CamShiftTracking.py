@@ -1,6 +1,9 @@
 import numpy as np
 import cv2
 
+from Ind_work_1.legacy.CamShiftHandMade_Legacy import CamShiftHandMade
+
+tracker = CamShiftHandMade()
 cap = cv2.VideoCapture(0)
 ret, frame = cap.read()
 
@@ -32,26 +35,28 @@ term_crit = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 1)
 while True:
     # недоделал
     ret, frame = cap.read()
-    vis = frame.copy()
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    mask = cv2.inRange(hsv, np.array((0., 60., 32.)), np.array((180., 255., 255.)))
+    # mask = cv2.inRange(hsv, np.array((0., 60., 32.)), np.array((180., 255., 255.)))
 
     if ret:
 
         # Вычисляем обратное проецирование (back projection) с использованием гистограммы ROI.
         dst = cv2.calcBackProject([hsv], [0], roi_hist, [0, 180], 1)
         x0, y0, x1, y1 = track_window
-        hsv_roi = hsv[y0:y1, x0:x1]
-        mask_roi = mask[y0:y1, x0:x1]
+
+        # dst &= mask
         # Применяем метод CamShift для обновления координат окна отслеживания.
-        ret, track_window = cv2.CamShift(dst, track_window, term_crit)
+        rec, track_window = cv2.CamShift(dst, track_window, term_crit)
+        # track_window = tracker.camshift(dst, track_window)
+        x, y, w, h = track_window
 
         # Извлекаем угол поворота и координаты вершин области отслеживания.
-        pts = cv2.boxPoints(ret)
-        pts = np.intp(pts)
+        # pts = cv2.boxPoints(rec)
+        # pts = np.intp(pts)
 
         # Рисуем многоугольник, охватывающий область отслеживания, на кадре.
-        img = cv2.polylines(frame, [pts], True, (0, 0, 255), 5)
+        # img = cv2.polylines(frame, [pts], True, (0, 0, 255), 5)
+        img = cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 5)
 
         # Отображаем текущий кадр с обнаруженным лицом.
         cv2.imshow('img', img)
