@@ -1,73 +1,89 @@
-import numpy as np
 import cv2
+import numpy as np
 
-from Ind_work_1.legacy.CamShiftHandMade_Legacy import CamShiftHandMade
 
-tracker = CamShiftHandMade()
-cap = cv2.VideoCapture(0)
-ret, frame = cap.read()
+class CamShiftHandMade:
+    def __init__(self):
+        self.frame_height = 0
+        self.frame_width = 0
+        self.frame = None
+        self.ret = False
 
-# Инициализируем каскадный классификатор для обнаружения лиц.
-face_cascade = cv2.CascadeClassifier('../haarcascade_frontalface_default.xml')
+    def video_choose(self, video_path):
+        self.cap = cv2.VideoCapture(video_path)
+        self.ret, self.frame = self.cap.read()
 
-# Ищем лица на первом кадре.
-face_rects = face_cascade.detectMultiScale(frame)
+        if self.ret:
+            self.frame_height, self.frame_width = self.frame.shape[:2]
+            print(self.frame_width, self.frame_height)
+        else:
+            print("The video was not read successfully")
 
-# Извлекаем координаты и размер первого обнаруженного лица.
-(face_x, face_y, w, h) = tuple(face_rects[0])
+        # Изменение размера видео для более удобного просмотра
+        self.frame = cv2.resize(self.frame, (self.frame_width // 2, self.frame_height // 2))
 
-# Инициализируем окно отслеживания для метода CamShift.
-track_window = (face_x, face_y, w, h)
+    def track(self):
+        # Инициализируем каскадный классификатор для обнаружения лиц.
+        # face_cascade = cv2.CascadeClassifier('../haarcascade_frontalface_default.xml')
+        #
+        # # Ищем лица на первом кадре.
+        # face_rects = face_cascade.detectMultiScale(self.frame)
+        #
+        # if len(face_rects) > 0:
+        bbox = cv2.selectROI(self.frame, False)
 
-# Выделяем область интереса (Region of Interest, ROI) на первом кадре, где находится лицо.
-roi = frame[face_y:face_y + h, face_x:face_x + w]
-# Конвертируем ROI в цветовое пространство HSV.
-hsv_roi = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
+        # Извлекаем координаты и размер первого обнаруженного лица.
+        face_x, face_y, w, h = bbox
 
-# Вычисляем гистограмму цветового канала H (оттенок) для ROI.
-roi_hist = cv2.calcHist([hsv_roi], [0], None, [180], [0, 180])
-# Нормализуем гистограмму для лучшей совместимости с методом CamShift.
-cv2.normalize(roi_hist, roi_hist, 0, 255, cv2.NORM_MINMAX)
+        # Инициализируем окно отслеживания для метода CamShift.
+        track_window = (face_x, face_y, w, h)
 
-# Инициализируем критерий завершения для метода CamShift.
-term_crit = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 1)
+        # Выделяем область интереса (Region of Interest, ROI) на первом кадре, где находится лицо.
+        roi = self.frame[face_y:face_y + h, face_x:face_x + w]
+        # Конвертируем ROI в цветовое пространство HSV.
+        hsv_roi = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
 
-while True:
-    # недоделал
-    ret, frame = cap.read()
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    # mask = cv2.inRange(hsv, np.array((0., 60., 32.)), np.array((180., 255., 255.)))
+        # Вычисляем гистограмму цветового канала H (оттенок) для ROI.
+        roi_hist = cv2.calcHist([hsv_roi], [0], None, [180], [0, 180])
+        # Нормализуем гистограмму для лучшей совместимости с методом CamShift.
+        cv2.normalize(roi_hist, roi_hist, 0, 255, cv2.NORM_MINMAX)
 
-    if ret:
+        # Инициализируем критерий завершения для метода CamShift.
+        term_crit = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 1)
 
-        # Вычисляем обратное проецирование (back projection) с использованием гистограммы ROI.
-        dst = cv2.calcBackProject([hsv], [0], roi_hist, [0, 180], 1)
-        x0, y0, x1, y1 = track_window
+        while True:
+            ret, frame = self.cap.read()
+            if not ret:
+                print("Error reading video file.")
+                break
 
-        # dst &= mask
-        # Применяем метод CamShift для обновления координат окна отслеживания.
-        rec, track_window = cv2.CamShift(dst, track_window, term_crit)
-        # track_window = tracker.camshift(dst, track_window)
-        x, y, w, h = track_window
+            hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-        # Извлекаем угол поворота и координаты вершин области отслеживания.
-        # pts = cv2.boxPoints(rec)
-        # pts = np.intp(pts)
+            # Вычисляем обратное проецирование (back projection) с использованием гистограммы ROI.
+            dst = cv2.calcBackProject([hsv], [0], roi_hist, [0, 180], 1)
+            x0, y0, x1, y1 = track_window
 
-        # Рисуем многоугольник, охватывающий область отслеживания, на кадре.
-        # img = cv2.polylines(frame, [pts], True, (0, 0, 255), 5)
-        img = cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 5)
+            # Применяем метод CamShift для обновления координат окна отслеживания.
+            ret, track_window = cv2.CamShift(dst, track_window, term_crit)
+            x, y, w, h = track_window
 
-        # Отображаем текущий кадр с обнаруженным лицом.
-        cv2.imshow('img', img)
+            # Рисуем прямоугольник, охватывающий область отслеживания, на кадре.
+            img = cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 5)
 
-        k = cv2.waitKey(1) & 0xff
-        if k == 27:
-            break
+            # Отображаем текущий кадр с обнаруженным лицом.
+            cv2.imshow('img', img)
 
-    else:
-        break
+            k = cv2.waitKey(30) & 0xff
+            if k == 27:
+                break
 
-# Закрываем окна OpenCV и освобождаем видеокамеру.
-cv2.destroyAllWindows()
-cap.release()
+        # Закрываем окна OpenCV и освобождаем видеопоток.
+        cv2.destroyAllWindows()
+        self.cap.release()
+
+
+if __name__ == '__main__':
+    tracker = CamShiftHandMade()
+    video_path = '../videos/source/1.mp4'
+    tracker.video_choose(video_path)
+    tracker.track()
