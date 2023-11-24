@@ -128,5 +128,5 @@ class CamShiftHandMade:
         return roi
 
 
-camShift = CamShiftHandMade()
-camShift.start()
+# camShift = CamShiftHandMade()
+# camShift.start()
