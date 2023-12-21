@@ -43,7 +43,7 @@ def motion_detection(src, output, ksize, sigma, threshold, base_area):
         # Вычисляет абсолютную разницу между двумя изображениями.
         frame_diff = cv.absdiff(gg_image, prev_image)
 
-        # Применяет пороговое(бинарное) значение к изображению. Тип пороговой обработки
+        # Применяет пороговое(бинарное) значение к изображению. Тип пороговой обработки. Бинаризация изображения
         _, frame_treshold = cv.threshold(frame_diff, threshold, 255, cv.THRESH_BINARY)
 
         # Поиск контуров. Режим поиска контура. Метод аппроксимации контура.

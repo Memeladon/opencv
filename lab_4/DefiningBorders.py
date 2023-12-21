@@ -13,6 +13,13 @@ def display_image(image, winname):
     cv2.imshow(f"{winname}", image)
 
 
+def normalize(matrix):
+    min_val = np.min(matrix)
+    max_val = np.max(matrix)
+    normalized_matrix = (matrix - min_val) / (max_val - min_val)
+    return normalized_matrix
+
+
 def view(image_path):
     try:
         image = cv2.imread(image_path)
@@ -39,6 +46,7 @@ def view(image_path):
 
             # Вычисляем матрицу значений углов градиентов
             gradient_angle = np.arctan2(gradient_y, gradient_x)
+
             # Подавление немаксимумов
             non_max = non_max_suppression(gradient_magnitude, gradient_angle)
 
