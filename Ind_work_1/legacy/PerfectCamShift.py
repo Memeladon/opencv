@@ -1,7 +1,7 @@
 from __future__ import print_function
 import sys
 
-from Ind_work_1.methods.CamShiftHandMade import CamShiftHandMade
+from Ind_work_1.legacy.CamShiftHandMade_Legacy import CamShiftHandMade
 
 PY3 = sys.version_info[0] == 3
 
