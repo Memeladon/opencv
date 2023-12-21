@@ -4,7 +4,7 @@ cap = cv2.VideoCapture(0)
 ret, frame = cap.read()
 
 # Инициализируем каскадный классификатор для обнаружения лиц.
-face_cascade = cv2.CascadeClassifier('../haarcascade_frontalface_default.xml')
+face_cascade = cv2.CascadeClassifier('../facedetecting_cascade.xml')
 # Ищем лица на первом кадре.
 face_rects = face_cascade.detectMultiScale(frame)
 # Извлекаем координаты и размер первого обнаруженного лица.

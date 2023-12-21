@@ -3,6 +3,7 @@ import numpy as np
 import os
 import time
 
+
 class CamShiftHandMade:
     def __init__(self):
         self.frame_height = 0
@@ -24,34 +25,33 @@ class CamShiftHandMade:
         os.makedirs(output_folder, exist_ok=True)
         output_file = os.path.join(output_folder, f'CamShift_1.avi')
         self.output = cv2.VideoWriter(output_file, cv2.VideoWriter_fourcc(*'XVID'), 60.0,
-                                      (self.frame_width // 2, self.frame_height // 2), True)
+                                      (self.frame_width, self.frame_height), True)
 
         # Изменение размера видео для более удобного просмотра
-        self.frame = cv2.resize(self.frame, (self.frame_width // 2, self.frame_height // 2))
+        self.frame = cv2.resize(self.frame, (self.frame_width, self.frame_height))
 
     def track(self):
         # Инициализируем каскадный классификатор для обнаружения лиц.
-        # face_cascade = cv2.CascadeClassifier('../haarcascade_frontalface_default.xml')
-        #
-        # # Ищем лица на первом кадре.
-        # face_rects = face_cascade.detectMultiScale(self.frame)
-        #
-        # if len(face_rects) > 0:
-        bbox = cv2.selectROI(self.frame, False)
+        face_cascade = cv2.CascadeClassifier('../facedetecting_cascade.xml')
+
+        # Ищем лица на первом кадре.
+        face_rects = face_cascade.detectMultiScale(self.frame)
 
         # Извлекаем координаты и размер первого обнаруженного лица.
-        face_x, face_y, w, h = bbox
+        (face_x, face_y, w, h) = tuple(face_rects[0])
 
         # Инициализируем окно отслеживания для метода CamShift.
         track_window = (face_x, face_y, w, h)
 
         # Выделяем область интереса (Region of Interest, ROI) на первом кадре, где находится лицо.
         roi = self.frame[face_y:face_y + h, face_x:face_x + w]
+
         # Конвертируем ROI в цветовое пространство HSV.
         hsv_roi = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
 
         # Вычисляем гистограмму цветового канала H (оттенок) для ROI.
         roi_hist = cv2.calcHist([hsv_roi], [0], None, [180], [0, 180])
+
         # Нормализуем гистограмму для лучшей совместимости с методом CamShift.
         cv2.normalize(roi_hist, roi_hist, 0, 255, cv2.NORM_MINMAX)
 
@@ -66,7 +66,7 @@ class CamShiftHandMade:
                 print("Error reading video file.")
                 break
 
-            frame = cv2.resize(frame, (self.frame_width // 2, self.frame_height // 2))
+            frame = cv2.resize(frame, (self.frame_width, self.frame_height))
 
             hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 

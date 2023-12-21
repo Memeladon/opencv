@@ -106,8 +106,8 @@ if __name__ == '__main__':
     elif key == 1:
         # TrackerCreator('CSRT', 'cars.mp4').render()
         TrackerCreator('CSRT', '1').render()
-        TrackerCreator('CSRT', 'front-of-cars-in-forest.mp4').render()
-        TrackerCreator('CSRT', 'long-road-in-an-air.mp4').render()
-        TrackerCreator('CSRT', 'two-cars-speeding.mp4').render()
+        # TrackerCreator('CSRT', 'front-of-cars-in-forest.mp4').render()
+        # TrackerCreator('CSRT', 'long-road-in-an-air.mp4').render()
+        # TrackerCreator('CSRT', 'two-cars-speeding.mp4').render()
 
 
