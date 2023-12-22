@@ -1,3 +1,5 @@
+import time
+
 import cv2
 import numpy as np
 
@@ -78,6 +80,9 @@ def execute_tracker(file):
     # Используется Лицевой кадр как начальную область интереса (ROI)
     roi = (faces[0][0], faces[0][1], faces[0][2], faces[0][3])
 
+    # Замер времени выполнения
+    start_time = time.time()
+
     # Инициализация объекта CAMShiftTracker с выбранным ROI и первым кадром
     camShiftTracker = CamShiftTracker(roi, frame)
 
@@ -110,6 +115,9 @@ def execute_tracker(file):
         k = cv2.waitKey(1) & 0xff
         if k == 27:
             break
+    # Завершение замера времени выполнения
+    elapsed_time = time.time() - start_time
+    print(f"Execution time (camshifthandmade): {elapsed_time:.4f} seconds")
 
     # Освобождение объекта VideoWriter
     writer.release()

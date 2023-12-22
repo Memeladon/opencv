@@ -1,4 +1,6 @@
 import os
+import time
+
 import cv2
 
 
@@ -18,10 +20,10 @@ class TrackerCreator:
                           'CSRT': cv2.TrackerCSRT_create()}
         # Словарь доступных видео
         self.video_map = {'1': '../videos/source/1.mp4',
-                          'classic-red-sports-car.mp4': '../videos/source/classic-red-sports-car.mp4',
-                          'front-of-cars-in-forest.mp4': '../videos/source/front-of-cars-in-forest.mp4',
-                          'long-road-in-an-air.mp4': '../videos/source/long-road-in-an-air.mp4',
-                          'two-cars-speeding.mp4': '../videos/source/two-cars-speeding.mp4', }
+                          '2': '../videos/source/2.mp4',
+                          '3': '../videos/source/3.mp4',
+                          '4': '../videos/source/4.mp4',
+                          '5': '../videos/source/5.mp4', }
 
         # Создание трекера на основе выбранного типа
         if self.types_map[tracker_type]:
@@ -36,7 +38,7 @@ class TrackerCreator:
 
             if self.ret:
                 self.frame_height, self.frame_width = self.frame.shape[:2]
-                print(self.frame_width, self.frame_height)
+                # print(self.frame_width, self.frame_height)
             else:
                 print("The video was not read successfully")
 
@@ -61,13 +63,15 @@ class TrackerCreator:
         bbox = cv2.selectROI(self.frame, False)
         self.ret = self.tracker.init(self.frame, bbox)
 
+        # Замер времени выполнения
+        start_time = time.time()
+
         # Start tracking
         while True:
             ret, frame = self.video.read()
             if ret:
                 frame = cv2.resize(frame, [self.frame_width // 2, self.frame_height // 2])
             if not ret:
-                print('something went wrong')
                 break
             timer = cv2.getTickCount()
             ret, bbox = self.tracker.update(frame)
@@ -93,21 +97,26 @@ class TrackerCreator:
         self.output.release()
         cv2.destroyAllWindows()
 
+        # Завершение замера времени выполнения
+        elapsed_time = time.time() - start_time
+        print(f"Execution time ({self.tracker_type}): {elapsed_time:.4f} seconds")
+
 
 if __name__ == '__main__':
     # Этот код будет выполнен только при вызове файла MultiTrackerCreator.py как скрипта
     key = 1
     if key == 0:
-        # TrackerCreator('KCF', 'cars.mp4').render()
         TrackerCreator('KCF', '1').render()
-        # TrackerCreator('KCF', 'front-of-cars-in-forest.mp4').render()
-        # TrackerCreator('KCF', 'long-road-in-an-air.mp4').render()
-        # TrackerCreator('KCF', 'two-cars-speeding.mp4').render()
+        TrackerCreator('KCF', '2').render()
+        TrackerCreator('KCF', '3').render()
+        TrackerCreator('KCF', '4').render()
+        TrackerCreator('KCF', '5').render()
+
     elif key == 1:
-        # TrackerCreator('CSRT', 'cars.mp4').render()
         TrackerCreator('CSRT', '1').render()
-        # TrackerCreator('CSRT', 'front-of-cars-in-forest.mp4').render()
-        # TrackerCreator('CSRT', 'long-road-in-an-air.mp4').render()
-        # TrackerCreator('CSRT', 'two-cars-speeding.mp4').render()
+        TrackerCreator('CSRT', '2').render()
+        TrackerCreator('CSRT', '3').render()
+        TrackerCreator('CSRT', '4').render()
+        TrackerCreator('CSRT', '5').render()
 
 
