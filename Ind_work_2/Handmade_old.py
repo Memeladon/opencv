@@ -69,16 +69,17 @@ def get_angle_number(x, y):
 def canny(kernel_size, standard_deviation, bound_part, operator_mode, path):
     file_name = (
         "canny_img_"
-        + path
-        + "_ks_"
-        + str(kernel_size)
-        + "_sd_"
-        + str(standard_deviation)
-        + "_bp_"
-        + str(bound_part)
-        + "_om_"
         + str(operator_mode)
-        + ".jpg"
+        + "_kernel-"
+        + str(kernel_size)
+        + "_deviation-"
+        + str(standard_deviation)
+        + "_bound-"
+        + str(bound_part)
+        + "_operator-"
+        + str(operator_mode)
+        + "_"
+        + path
     )
     print("Start " + file_name)
 
@@ -200,7 +201,7 @@ def canny(kernel_size, standard_deviation, bound_part, operator_mode, path):
                 elif gradient > upper_bound:
                     img_border_filtered[i][j] = 255
 
-    isCompleted = cv2.imwrite(r".\IZ2\output\\" + file_name, img_border_filtered)
+    isCompleted = cv2.imwrite(r".\out\\" + file_name, img_border_filtered)
     if isCompleted:
         print("Complete " + file_name)
 
@@ -209,18 +210,18 @@ def laplacian_of_gaussian(kernel_size, standard_deviation, bound, path):
     file_name = (
         "LoG_img_"
         + path
-        + "_ks_"
+        + "_kernel-"
         + str(kernel_size)
-        + "_sd_"
+        + "_deviation-"
         + str(standard_deviation)
-        + "_bp_"
+        + "_bound-"
         + str(bound)
         + ".jpg"
     )
     print("Start " + file_name)
 
     # make gray img
-    frame = cv2.imread(r".\IZ2\imgs\\" + path, cv2.IMREAD_GRAYSCALE)
+    frame = cv2.imread(r".\in\\" + path, cv2.IMREAD_GRAYSCALE)
 
     # blur
     img = cv2.GaussianBlur(frame, (kernel_size, kernel_size), standard_deviation)
@@ -231,7 +232,7 @@ def laplacian_of_gaussian(kernel_size, standard_deviation, bound, path):
 
     thresh = cv2.threshold(laplacian_img, bound, 255, cv2.THRESH_BINARY)[1]
 
-    isCompleted = cv2.imwrite(r".\IZ2\output\\" + file_name, thresh)
+    isCompleted = cv2.imwrite(r".\out\\" + file_name, thresh)
     if isCompleted:
         print("Complete " + file_name)
 
@@ -240,7 +241,7 @@ kernel_sizes = [3, 7, 11]
 standard_deviations = [1.4]
 bound_parts = [4, 7, 10]
 operators = ["sobel", "roberts", "kirsch"]
-imgs = ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg"]
+imgs = ["in/car_1.jpg", "in/car_2.jpg", "in/car_3.jpg", "in/car_4.jpg", "in/car_5.jpg"]
 
 print("Start Canny")
 print(datetime.datetime.now())

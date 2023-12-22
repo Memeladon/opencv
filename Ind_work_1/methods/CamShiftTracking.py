@@ -28,7 +28,7 @@ class CamShiftHandMade:
                                       (self.frame_width, self.frame_height), True)
 
         # Изменение размера видео для более удобного просмотра
-        self.frame = cv2.resize(self.frame, (self.frame_width, self.frame_height))
+        self.frame = cv2.resize(self.frame, (self.frame_width , self.frame_height))
 
     def track(self):
         # Инициализируем каскадный классификатор для обнаружения лиц.

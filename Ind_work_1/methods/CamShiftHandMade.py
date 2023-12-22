@@ -116,7 +116,11 @@ def execute_tracker(file):
 
 
 # Список видеофайлов для обработки
-files = ['D:\\DEV\\opencv\\Ind_work_1\\videos\source\\1.mp4']
+files = ['../videos/source/1.mp4',
+         '../videos/source/2.mp4',
+         '../videos/source/3.mp4',
+         '../videos/source/4.mp4',
+         '../videos/source/5.mp4']
 
 # Цикл по списку файлов, вызов функции iz_part2 для каждого файла
 for file in files:

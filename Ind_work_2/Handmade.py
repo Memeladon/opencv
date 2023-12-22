@@ -33,13 +33,13 @@ def contour_object(binary_mask):
 
 
 # Загрузка изображения
-image = cv2.imread('car_1.jpg')
+image = cv2.imread('in/car_3.jpg')
 
 # Преобразование изображения из BGR в HSV 2 6 7 8 9 10
 hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
 # Определение диапазона цвета
-lower_purple = np.array([120, 50, 50])
+lower_purple = np.array([110, 50, 50])
 upper_purple = np.array([160, 255, 255])
 
 # Создание маски с использованием цветового фильтра

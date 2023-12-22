@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import time
 
+
 def apply_canny(image, operator, gaussian_blur_kernel, low_threshold, high_threshold):
     # Преобразование в оттенки серого
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -21,14 +22,14 @@ def apply_canny(image, operator, gaussian_blur_kernel, low_threshold, high_thres
         # Применение альтернативного оператора (например, оператор Превитта)
         prewitt_x = cv2.Sobel(blurred_image, cv2.CV_64F, 1, 0, ksize=3)
         prewitt_y = cv2.Sobel(blurred_image, cv2.CV_64F, 0, 1, ksize=3)
-        edges = np.sqrt(prewitt_x**2 + prewitt_y**2).astype(np.uint8)
+        edges = np.sqrt(prewitt_x ** 2 + prewitt_y ** 2).astype(np.uint8)
     elif operator == 'roberts':
         # Применение оператора Робертса
         roberts_cross_x = np.array([[1, 0], [0, -1]], dtype=np.float32)
         roberts_cross_y = np.array([[0, 1], [-1, 0]], dtype=np.float32)
         gradient_x = cv2.filter2D(blurred_image, cv2.CV_64F, roberts_cross_x)
         gradient_y = cv2.filter2D(blurred_image, cv2.CV_64F, roberts_cross_y)
-        edges = np.sqrt(gradient_x**2 + gradient_y**2).astype(np.uint8)
+        edges = np.sqrt(gradient_x ** 2 + gradient_y ** 2).astype(np.uint8)
     else:
         return None  # Вернуть None в случае неверного оператора
 
@@ -55,8 +56,9 @@ def test_canny_parameters(image_paths, operator):
 
                 if edges is not None:
                     # Визуализация результатов
-                    cv2.imshow(f"Parameters: Operator={operator}, Blur={blur_kernel}, Low={low_threshold}, High={high_threshold}",
-                               edges)
+                    cv2.imshow(
+                        f"Parameters: Operator={operator}, Blur={blur_kernel}, Low={low_threshold}, High={high_threshold}",
+                        edges)
                     cv2.waitKey(0)
 
                     average_execution_time += execution_time
@@ -72,10 +74,10 @@ def test_canny_parameters(image_paths, operator):
 
 if __name__ == "__main__":
     # Замените пути к изображениям на свои
-    image_paths = ["11.jpg", "7.jpg", "7.jpg", "8.jpg","9.jpg","10.jpg"]
+    image_paths = ["car_1.jpg", "car_2.jpg", "car_3.jpg", "car_4.jpg", "car_5.jpg"]
 
     # Выбор между алгоритмом Канни, оператором Лапласа, оператором Робертса, оператором Превитта и альтернативным методом
-    # test_canny_parameters(image_paths, operator='canny')
+    test_canny_parameters(image_paths, operator='canny')
     # test_canny_parameters(image_paths, operator='laplacian')
     # test_canny_parameters(image_paths, operator='roberts')
-    test_canny_parameters(image_paths, operator='prewitt')
+    # test_canny_parameters(image_paths, operator='prewitt')
