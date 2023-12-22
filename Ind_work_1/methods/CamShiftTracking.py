@@ -60,6 +60,9 @@ class CamShiftHandMade:
 
         prev_frame_time = 0
 
+        # Замер времени выполнения
+        start_time = time.time()
+
         while True:
             ret, frame = self.cap.read()
             if not ret:
@@ -102,10 +105,12 @@ class CamShiftHandMade:
         # Закрываем окна OpenCV и освобождаем видеопоток.
         cv2.destroyAllWindows()
         self.cap.release()
-
+        # Завершение замера времени выполнения
+        elapsed_time = time.time() - start_time
+        print(f"Execution time (camshift): {elapsed_time:.4f} seconds")
 
 if __name__ == '__main__':
     tracker = CamShiftHandMade()
-    video_path = '../videos/source/1.mp4'
+    video_path = '../videos/source/5.mp4'
     tracker.video_choose(video_path)
     tracker.track()
